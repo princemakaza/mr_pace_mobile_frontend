@@ -1,0 +1,51 @@
+name: mrpace
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.0
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  get: ^4.7.2
+  logger: ^2.6.0
+  intl: ^0.20.2
+  shared_preferences: ^2.5.3
+  google_fonts: ^6.2.1
+  page_transition: ^2.2.1
+  flutter_animate: ^4.5.2
+  csv: ^6.0.0
+  file_picker: ^10.2.0
+  data_table_2: ^2.6.0
+  syncfusion_flutter_datagrid: ^30.1.40
+  flutter_charts: ^0.5.2
+  pie_chart: ^5.4.0
+  loading_animation_widget: ^1.3.0
+  animated_splash_screen: ^1.3.0
+  smooth_page_indicator: ^1.2.1
+  cached_network_image: ^3.4.1
+  csc_picker_plus: ^0.0.3
+  animated_introduction: ^1.0.3
+  introduction_screen: ^3.1.17
+  flutter_svg: ^2.2.0
+  shimmer: ^3.0.0
+  skeletonizer: ^2.1.0+1
+  fluttertoast: ^8.2.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
