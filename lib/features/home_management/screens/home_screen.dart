@@ -281,11 +281,17 @@ class _HomePageState extends State<HomePage> {
                     'Sports Shop',
                     Icons.shopping_bag,
                     AppColors.secondaryColor,
+                    onTap: () {
+                      Get.toNamed(RoutesHelper.allProductsScreen);
+                    },
                   ).animate().fadeIn(delay: 700.ms),
                   _buildServiceCard(
                     'Event Hosting',
                     Icons.event,
                     AppColors.accentColor,
+                    onTap: () {
+                      // Get.toNamed(RoutesHelper.allProductsScreen);
+                    },
                   ).animate().fadeIn(delay: 750.ms),
                   _buildServiceCard(
                     'Training Plans',

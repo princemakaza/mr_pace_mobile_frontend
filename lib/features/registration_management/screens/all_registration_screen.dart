@@ -59,11 +59,14 @@ class _RegisteredRacesScreenState extends State<RegisteredRacesScreen>
 
   // Filter registrations based on search query and type
   List<dynamic> get filteredRegistrations {
+    List<dynamic> baseList = controller.registeredRaces.reversed
+        .toList(); // Reverse the original list
+
     if (searchQuery.value.isEmpty) {
-      return controller.registeredRaces;
+      return baseList;
     }
 
-    return controller.registeredRaces.where((registration) {
+    return baseList.where((registration) {
       final query = searchQuery.value.toLowerCase();
 
       switch (currentSearchType.value) {

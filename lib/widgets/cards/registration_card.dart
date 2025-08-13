@@ -20,7 +20,6 @@ class RegistrationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final currencyFormat = NumberFormat.currency(symbol: '\$');
     final dateFormat = DateFormat('MMM dd, yyyy');
-
     return GestureDetector(
       onTap: onTap ?? () => _showDefaultSnackbar(context),
       child:

@@ -17,4 +17,9 @@ class RoutesHelper {
   static String paymentPage = "/payment_page";
   static String allRegistrationsPage = "/all_registrations_page";
   static String registrationDetailsPage = "/registration_details_page";
+  static String allProductsScreen = "/all_products_screen";
+  static String productDetailsScreen = "/product_details_screen";
+  static String cartScreen = "/cart_screen";
+  static String cartItemDetailsScreen = "/cart_item_details_screen";
+
 }

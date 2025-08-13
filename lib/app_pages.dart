@@ -6,10 +6,15 @@ import 'package:mrpace/features/auth_management/Screens/confirm_email.dart';
 import 'package:mrpace/features/auth_management/Screens/forgot_password.dart';
 import 'package:mrpace/features/auth_management/Screens/sign_in.dart';
 import 'package:mrpace/features/auth_management/Screens/sign_up_page.dart';
+import 'package:mrpace/features/cart_management/controller/cart_controller.dart';
+import 'package:mrpace/features/cart_management/screen/cart_item_detail.dart';
+import 'package:mrpace/features/cart_management/screen/cart_screen.dart';
 import 'package:mrpace/features/home_management/screens/home_screen.dart';
 import 'package:mrpace/features/home_management/screens/main_home_page.dart'
     show MainHomePage;
 import 'package:mrpace/features/payment_management/screens/payment_success.dart';
+import 'package:mrpace/features/products_management/screens/all_products_screen.dart';
+import 'package:mrpace/features/products_management/screens/product_details_screen.dart';
 import 'package:mrpace/features/race_management/screen/all_races_screen.dart';
 import 'package:mrpace/features/race_management/screen/race_details_screen.dart';
 import 'package:mrpace/features/registration_management/screens/all_registration_screen.dart';
@@ -17,6 +22,7 @@ import 'package:mrpace/features/registration_management/screens/race_details_reg
 import 'package:mrpace/features/registration_management/screens/success_registraion.dart';
 import 'package:mrpace/features/welcome_page/splash_screen.dart';
 import 'package:mrpace/models/all_races_model.dart';
+import 'package:mrpace/models/product_model.dart';
 import 'package:mrpace/models/registration_model.dart';
 
 class AppPages {
@@ -129,12 +135,48 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),
     ),
+
+    GetPage(
+      name: RoutesHelper.allProductsScreen,
+      page: () => const AllProductsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+
     GetPage(
       name: RoutesHelper.registrationDetailsPage,
       page: () {
         final registration = Get.arguments as RegistrationModel;
         return ViewRegistrationDetails(registration: registration);
       },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.productDetailsScreen,
+      page: () {
+        final product = Get.arguments as ProductModel;
+        return ProductDetailScreen(product: product);
+      },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.cartItemDetailsScreen,
+      page: () {
+        final product = Get.arguments as CartItem;
+        return CartItemDetailsScreen(cartItem: product);
+      },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.cartScreen,
+      page: () => const ProductsInCartScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),

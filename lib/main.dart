@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:mrpace/app_pages.dart';
 import 'package:mrpace/core/utils/pallete.dart';
 import 'package:mrpace/features/auth_management/Controller/auth_controller.dart';
+import 'package:mrpace/features/cart_management/controller/cart_controller.dart';
 import 'package:mrpace/features/payment_management/controllers/payment_controller.dart';
+import 'package:mrpace/features/products_management/controller/product_controller.dart';
 import 'package:mrpace/features/race_management/controller/race_controller.dart';
 import 'package:mrpace/features/registration_management/controller/registration_controller.dart';
 
@@ -14,6 +16,8 @@ void main() async {
   Get.put(RegistrationController());
   Get.put(AuthController());
   Get.put(RaceController());
+  Get.put(ProductController());
+  Get.put(ProductCartController());
   runApp(MyApp());
 }
 

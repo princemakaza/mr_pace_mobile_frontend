@@ -20,6 +20,6 @@ class CardLoad extends StatelessWidget {
           ),
         ),
       ),
-    );;
+    );
   }
 }
