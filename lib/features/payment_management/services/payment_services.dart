@@ -73,7 +73,7 @@ class PaymentService {
     const String url = '${ApiKeys.baseUrl}/register/check-payment-status';
     var client = http.Client();
 
-    final body = json.encode({"pollUrl": pollUrl,"id":id});
+    final body = json.encode({"pollUrl": pollUrl, "id": id});
 
     final headers = {
       'Content-Type': 'application/json',
@@ -114,6 +114,121 @@ class PaymentService {
         message: 'Error during payment submission: $e',
       );
     } finally {
+      client.close();
+    }
+  }
+
+  static Future<APIResponse<String>> submitOrderPayment({
+    required String orderId,
+    required String phoneNumber,
+  }) async {
+    final token = await CacheUtils.checkToken();
+
+    const String url =
+        '${ApiKeys.baseUrl}/order_product_route/pay/ecocash'; // Adjust endpoint as needed
+    var client = http.Client();
+
+    final body = json.encode({"orderId": orderId, "phoneNumber": phoneNumber});
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    try {
+      final response = await client.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+
+      DevLogs.logInfo('Payment response: ${response.body}');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final responseData = json.decode(response.body);
+
+        DevLogs.logInfo(
+          'Payment submission successful: ${responseData['message'] ?? 'Success'}',
+        );
+        return APIResponse<String>(
+          success: true,
+          data: responseData['message'] ?? 'Payment submitted successfully',
+          message: 'Payment submitted successfully',
+        );
+      } else {
+        return APIResponse<String>(
+          success: false,
+          message:
+              'Payment failed. HTTP Status: ${response.statusCode} - ${response.reasonPhrase}',
+        );
+      }
+    } catch (e) {
+      DevLogs.logError('Payment submission error: $e');
+      return APIResponse<String>(
+        success: false,
+        message: 'Error during payment submission: $e',
+      );
+    } finally {
+      client.close();
+    }
+  }
+
+  /// Checks the status of a payment order
+  ///
+  /// Returns the payment order status and registration number if the payment is successful.
+  /// Returns an error message otherwise.
+  ///
+  /// The [pollUrl] parameter is the URL to poll for payment order status.
+  /// The [orderId] parameter is the ID of the order.
+  static Future<String> checkPaymentOrderStatus({
+    required String pollUrl,
+    required String orderId,
+  }) async {
+    // Get the user token
+    final token = await CacheUtils.checkToken();
+
+    // Define the URL to check payment order status
+    const String url = '${ApiKeys.baseUrl}/order_product_route/check-payment';
+    var client = http.Client();
+
+    // Construct the request body
+    final body = json.encode({"pollUrl": pollUrl, "orderId": orderId});
+
+    // Define the request headers
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    try {
+      // Send the request and get the response
+      final response = await client.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+
+      // Log the response body
+      DevLogs.logInfo('Payment response: ${response.body}');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final responseData = json.decode(response.body);
+
+        // Return the payment order status and registration number
+        return 'Payment submitted successfully';
+      } else {
+        // Return an error message if the payment failed
+        DevLogs.logError(
+          'Payment failed. HTTP Status: ${response.statusCode} - ${response.reasonPhrase}',
+        );
+        return 'Payment failed. HTTP Status: ${response.statusCode} - ${response.reasonPhrase}';
+      }
+    } catch (e) {
+      // Return an error message if there was an error during the payment submission
+      DevLogs.logError('Payment submission error: $e');
+      return 'Error during payment submission: $e';
+    } finally {
+      // Close the HTTP client
       client.close();
     }
   }

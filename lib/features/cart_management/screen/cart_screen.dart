@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mrpace/config/routers/router.dart';
 import 'package:mrpace/core/utils/pallete.dart';
 import 'package:mrpace/features/cart_management/controller/cart_controller.dart';
+import 'package:mrpace/features/orders_management/screeens/order_submit_dialog.dart';
 import 'package:mrpace/widgets/cards/cart_product_screeen.dart';
 
 class ProductsInCartScreen extends StatelessWidget {
@@ -363,70 +364,6 @@ class ProductsInCartScreen extends StatelessWidget {
   }
 
   void _proceedToPayment(ProductCartController controller) {
-    // Show a success animation before navigating
-    Get.snackbar(
-      'Processing',
-      'Proceeding to payment...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.successColor,
-      colorText: Colors.white,
-      duration: const Duration(seconds: 2),
-      icon: const Icon(Icons.payment, color: Colors.white),
-    );
-
-    // Here you would navigate to your payment screen
-    // Example: Get.toNamed('/payment');
-
-    // For demonstration, let's show a dialog
-    Future.delayed(const Duration(milliseconds: 500), () {
-      Get.dialog(
-        AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.check_circle,
-                    size: 64,
-                    color: AppColors.successColor,
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Ready for Payment!',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Total: ${controller.formattedTotalPrice}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.subtextColor,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  _buildActionButton(
-                    text: 'Continue',
-                    onPressed: () => Get.back(),
-                    backgroundColor: AppColors.primaryColor,
-                    textColor: Colors.white,
-                  ),
-                ],
-              ),
-            )
-            .animate()
-            .scale(
-              begin: const Offset(0.8, 0.8),
-              duration: 300.ms,
-              curve: Curves.easeOutBack,
-            )
-            .fadeIn(duration: 300.ms),
-      );
-    });
+    Get.dialog(OrderDialog(cartItems: controller.cartItems));
   }
 }

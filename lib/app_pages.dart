@@ -12,6 +12,9 @@ import 'package:mrpace/features/cart_management/screen/cart_screen.dart';
 import 'package:mrpace/features/home_management/screens/home_screen.dart';
 import 'package:mrpace/features/home_management/screens/main_home_page.dart'
     show MainHomePage;
+import 'package:mrpace/features/orders_management/screeens/all_orders_screen.dart';
+import 'package:mrpace/features/orders_management/screeens/order_detail_screen.dart';
+import 'package:mrpace/features/orders_management/screeens/order_success_screen.dart';
 import 'package:mrpace/features/payment_management/screens/payment_success.dart';
 import 'package:mrpace/features/products_management/screens/all_products_screen.dart';
 import 'package:mrpace/features/products_management/screens/product_details_screen.dart';
@@ -20,10 +23,14 @@ import 'package:mrpace/features/race_management/screen/race_details_screen.dart'
 import 'package:mrpace/features/registration_management/screens/all_registration_screen.dart';
 import 'package:mrpace/features/registration_management/screens/race_details_registration.dart';
 import 'package:mrpace/features/registration_management/screens/success_registraion.dart';
+import 'package:mrpace/features/sports_news/screen/sport_news_details_screen.dart';
+import 'package:mrpace/features/sports_news/screen/sports_news_screen.dart';
 import 'package:mrpace/features/welcome_page/splash_screen.dart';
+import 'package:mrpace/models/all_order_model.dart';
 import 'package:mrpace/models/all_races_model.dart';
 import 'package:mrpace/models/product_model.dart';
 import 'package:mrpace/models/registration_model.dart';
+import 'package:mrpace/models/sports_news_model.dart';
 
 class AppPages {
   static final pages = [
@@ -181,5 +188,49 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),
     ),
+
+    GetPage(
+      name: RoutesHelper.orderSuccessScreen,
+      page: () => const OrderSuccessScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.allOrdersScreen,
+      page: () => const AllOrderScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.orderDetailScreen,
+      page: () {
+        final order = Get.arguments as AllOrderModel;
+        return AllOrderModelDetailScreen(order: order);
+      },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.allNewsScreen,
+      page: () => const AllSportNewsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+        GetPage(
+      name: RoutesHelper.newsDetailScreen,
+      page: () {
+        final newsModel = Get.arguments as SportNewsModel;
+        return NewsDetailsScreen(newsModel: newsModel);
+      },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    
+
   ];
 }

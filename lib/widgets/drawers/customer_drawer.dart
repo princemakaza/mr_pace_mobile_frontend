@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import 'package:mrpace/core/utils/pallete.dart';
 import 'package:mrpace/widgets/custom_typography/typography.dart';
 
@@ -104,7 +105,6 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
           ),
-
           // Drawer Items with flexible space
           Expanded(
             child: SingleChildScrollView(
@@ -116,6 +116,12 @@ class CustomDrawer extends StatelessWidget {
                     icon: Icons.store,
                     title: 'Athletics Store',
                     onTap: () => _navigateAndClose(context, '/store'),
+                  ).animate().fadeIn(delay: 300.ms),
+                  _buildDrawerItem(
+                    icon: Icons.shopping_bag_outlined,
+                    title: 'My Orders',
+                    onTap: () =>
+                        _navigateAndClose(context, '/all_orders_screen'),
                   ).animate().fadeIn(delay: 350.ms),
 
                   _buildDrawerItem(
@@ -129,7 +135,6 @@ class CustomDrawer extends StatelessWidget {
                     title: 'Race Calendar',
                     onTap: () => _navigateAndClose(context, '/calendar'),
                   ).animate().fadeIn(delay: 450.ms),
-
 
                   _buildDrawerItem(
                     icon: Icons.event_available,
@@ -151,8 +156,8 @@ class CustomDrawer extends StatelessWidget {
 
                   _buildDrawerItem(
                     icon: Icons.article,
-                    title: 'Athletics News',
-                    onTap: () => _navigateAndClose(context, '/news'),
+                    title: 'Sports News',
+                    onTap: () => _navigateAndClose(context, '/all_news_screen'),
                   ).animate().fadeIn(delay: 600.ms),
 
                   const Divider(height: 32, indent: 20, endIndent: 20),
@@ -253,9 +258,7 @@ class CustomDrawer extends StatelessWidget {
   }
 
   void _navigateAndClose(BuildContext context, String route) {
-    Navigator.pop(context);
-    // Uncomment when you have your navigation setup
-    // Navigator.pushNamed(context, route);
+    Get.toNamed(route); // Close the drawer
   }
 
   void _showLogoutDialog(BuildContext context) {

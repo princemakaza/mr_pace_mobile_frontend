@@ -21,5 +21,12 @@ class RoutesHelper {
   static String productDetailsScreen = "/product_details_screen";
   static String cartScreen = "/cart_screen";
   static String cartItemDetailsScreen = "/cart_item_details_screen";
+  static String orderSuccessScreen = "/order_success_screen";
+  static String allOrdersScreen = "/all_orders_screen";
+  static String orderDetailScreen = "/order_detail_screen";
+
+  static String newsDetailScreen = "/news_detail_screen";
+  static String allNewsScreen = "/all_news_screen";
+  // static String paymentSuccessScreen = "/payment_success_screen";
 
 }

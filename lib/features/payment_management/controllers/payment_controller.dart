@@ -77,4 +77,34 @@ class PaymentController extends GetxController {
       isLoading(false);
     }
   }
+
+  // Optional: Method to refresh payment status
+  Future<APIResponse<String>> submitOrderPayment(
+    String orderId,
+    String phoneNumber,
+  ) async {
+    try {
+      isLoading(true);
+      final response = await PaymentService.submitOrderPayment(
+        orderId: orderId,
+        phoneNumber: phoneNumber,
+      );
+
+      if (response.success) {
+        successMessage.value = response.message!;
+        return response;
+      } else {
+        errorMessage.value = response.message!;
+        DevLogs.logError(errorMessage.value);
+        return response;
+      }
+    } catch (e) {
+      DevLogs.logError('Error submitting payment: ${e.toString()}');
+      errorMessage.value =
+          'An error occurred while submitting payment: ${e.toString()}';
+      return APIResponse<String>(success: false, message: errorMessage.value);
+    } finally {
+      isLoading(false);
+    }
+  }
 }

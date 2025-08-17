@@ -370,6 +370,12 @@ class _CartItemDetailsScreenState extends State<CartItemDetailsScreen>
     ).animate().slideX(begin: -0.3, duration: 500.ms, delay: 500.ms);
   }
 
+/*************  ✨ Windsurf Command ⭐  *************/
+  /// Builds the section displaying the selected options like size and color for a cart item.
+  /// If the selected size and color are available in the cart item, they will be shown.
+  /// Otherwise, available size and color options are displayed.
+
+/*******  f3db45fb-809c-44ce-a2f0-837f7d526423  *******/
   Widget _buildSelectedOptionsSection() {
     // This would show the selected size/color if you store that information in CartItem
     // For now, it shows available options
