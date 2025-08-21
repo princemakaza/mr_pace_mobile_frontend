@@ -9,6 +9,9 @@ import 'package:mrpace/features/auth_management/Screens/sign_up_page.dart';
 import 'package:mrpace/features/cart_management/controller/cart_controller.dart';
 import 'package:mrpace/features/cart_management/screen/cart_item_detail.dart';
 import 'package:mrpace/features/cart_management/screen/cart_screen.dart';
+import 'package:mrpace/features/coaching_course_management/screen/all_coaching_courses_screen.dart';
+import 'package:mrpace/features/coaching_course_management/screen/view_coaching_course_screen.dart';
+import 'package:mrpace/features/course_booking_management/screens/course_booking_success_screen.dart'; // Add this import
 import 'package:mrpace/features/home_management/screens/home_screen.dart';
 import 'package:mrpace/features/home_management/screens/main_home_page.dart'
     show MainHomePage;
@@ -18,6 +21,8 @@ import 'package:mrpace/features/orders_management/screeens/order_success_screen.
 import 'package:mrpace/features/payment_management/screens/payment_success.dart';
 import 'package:mrpace/features/products_management/screens/all_products_screen.dart';
 import 'package:mrpace/features/products_management/screens/product_details_screen.dart';
+import 'package:mrpace/features/profile_management/screens/create_profile_screen.dart';
+import 'package:mrpace/features/profile_management/screens/profile_screen.dart';
 import 'package:mrpace/features/race_management/screen/all_races_screen.dart';
 import 'package:mrpace/features/race_management/screen/race_details_screen.dart';
 import 'package:mrpace/features/registration_management/screens/all_registration_screen.dart';
@@ -28,6 +33,7 @@ import 'package:mrpace/features/sports_news/screen/sports_news_screen.dart';
 import 'package:mrpace/features/welcome_page/splash_screen.dart';
 import 'package:mrpace/models/all_order_model.dart';
 import 'package:mrpace/models/all_races_model.dart';
+import 'package:mrpace/models/coaching_course_model.dart';
 import 'package:mrpace/models/product_model.dart';
 import 'package:mrpace/models/registration_model.dart';
 import 'package:mrpace/models/sports_news_model.dart';
@@ -136,6 +142,17 @@ class AppPages {
     ),
 
     GetPage(
+      name: RoutesHelper.profileScreen,
+      page: () {
+        final userId = Get.arguments as String;
+        return ProfileScreen(id: userId);
+      },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+
+    GetPage(
       name: RoutesHelper.allRegistrationsPage,
       page: () => const RegisteredRacesScreen(),
       transition: Transition.fadeIn,
@@ -220,7 +237,7 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),
     ),
-        GetPage(
+    GetPage(
       name: RoutesHelper.newsDetailScreen,
       page: () {
         final newsModel = Get.arguments as SportNewsModel;
@@ -230,7 +247,61 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),
     ),
-    
-
+    GetPage(
+      name: RoutesHelper.allNewsScreen,
+      page: () => const AllSportNewsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.createProfileScreen,
+      page: () => const CreateProfileScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.viewCoachingCourseDetails,
+      page: () {
+        final course = Get.arguments as CoachingCourseModel;
+        return ViewCoachingCourseDetailsScreen(course: course);
+      },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.allCoachingCourseScreen,
+      page: () => const AllCoachingCourseScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.coachingCourseBookingSuccess,
+      page: () {
+        final course = Get.arguments as CoachingCourseModel;
+        return ViewCoachingCourseDetailsScreen(course: course);
+      },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    // Add the CourseBookingSuccess route
+    GetPage(
+      name: RoutesHelper.coachingCourseBookingSuccess,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>;
+        return CourseBookingSuccess(
+          courseName: args['courseName'],
+          bookingPrice: args['bookingPrice'],
+          courseBookingId: args['courseBookingId'],
+        );
+      },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
   ];
 }

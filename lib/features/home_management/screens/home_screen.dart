@@ -299,9 +299,12 @@ class _HomePageState extends State<HomePage> {
                     AppColors.primaryColor.withOpacity(0.8),
                   ).animate().fadeIn(delay: 800.ms),
                   _buildServiceCard(
-                    'Coaching',
+                    'Coaching Courses',
                     Icons.school,
                     AppColors.secondaryColor.withOpacity(0.8),
+                      onTap: () {
+                      Get.toNamed(RoutesHelper.allCoachingCourseScreen);
+                    }
                   ).animate().fadeIn(delay: 850.ms),
                   _buildServiceCard(
                     'My Race Entries',
