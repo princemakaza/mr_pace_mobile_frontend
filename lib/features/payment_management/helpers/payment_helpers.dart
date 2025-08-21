@@ -47,6 +47,47 @@ class PaymentHelper {
     }
   }
 
+  // 🚀 New helper function for course booking payment
+  Future<bool> submitCoursebookingPayment({
+    required String courseBookingId,
+    required String phoneNumber,
+  }) async {
+    if (courseBookingId.isEmpty) {
+      return _showError('Course booking ID is required');
+    }
+    if (phoneNumber.isEmpty) {
+      return _showError('Phone number is required');
+    }
+
+    Get.dialog(
+      const CustomLoader(message: 'Submitting course booking payment...'),
+      barrierDismissible: false,
+    );
+
+    try {
+      final response = await _paymentController.submitCoursebookingPayment(
+        courseBookingId,
+        phoneNumber,
+      );
+      Get.back(); // Close loader
+
+      if (response.success) {
+        DevLogs.logInfo("Course booking payment: ${response.data}");
+        Get.offNamed(
+          RoutesHelper.paymentPage,
+          arguments: {'phoneNumber': phoneNumber},
+        );
+        return true;
+      }
+      return _showError(response.message ?? 'Course booking payment failed');
+    } catch (e) {
+      Get.back();
+      return _showError(
+        'Failed to submit course booking payment: ${e.toString()}',
+      );
+    }
+  }
+
   /// ✅ New method to check payment status
   Future<bool> checkPaymentStatus(String pollUrl, String id) async {
     if (pollUrl.isEmpty) {

@@ -39,6 +39,38 @@ class PaymentController extends GetxController {
     }
   }
 
+  // 🚀 New function for course booking payments
+  Future<APIResponse<String>> submitCoursebookingPayment(
+    String courseBookingId,
+    String phoneNumber,
+  ) async {
+    try {
+      isLoading(true);
+      final response = await PaymentService.submitCoursebookingPayment(
+        courseBookingId: courseBookingId,
+        phoneNumber: phoneNumber,
+      );
+
+      if (response.success) {
+        successMessage.value = response.message!;
+        return response;
+      } else {
+        errorMessage.value = response.message!;
+        DevLogs.logError(errorMessage.value);
+        return response;
+      }
+    } catch (e) {
+      DevLogs.logError(
+        'Error submitting course booking payment: ${e.toString()}',
+      );
+      errorMessage.value =
+          'An error occurred while submitting course booking payment: ${e.toString()}';
+      return APIResponse<String>(success: false, message: errorMessage.value);
+    } finally {
+      isLoading(false);
+    }
+  }
+
   // Method to check payment statusvar paymentStatus = ''.obs;
 
   Future<APIResponse<Map<String, dynamic>>> checkPaymentStatus(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
+import 'package:mrpace/config/routers/router.dart';
 import 'package:mrpace/core/utils/pallete.dart';
 import 'package:mrpace/widgets/custom_typography/typography.dart';
 
@@ -28,79 +29,87 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         children: [
           // Drawer Header with profile
-          Container(
-            height: effectiveHeaderHeight,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primaryColor,
-                  AppColors.primaryColor.withOpacity(0.9),
-                ],
-              ),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Profile Picture with fallback
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      child: profileImageUrl != null
-                          ? ClipOval(
-                              child: Image.network(
-                                profileImageUrl!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    _buildProfileFallback(),
-                              ),
-                            )
-                          : _buildProfileFallback(),
-                    ).animate().fadeIn(duration: 300.ms),
-                    const SizedBox(height: 12),
-                    // User Name with overflow protection
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        userName,
-                        style: CustomTypography.nunitoTextTheme.titleLarge
-                            ?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                      ).animate().slideX(begin: -0.1).fadeIn(delay: 100.ms),
-                    ),
-                    SizedBox(height: 4),
-                    // User Email with overflow protection
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        userEmail,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 12,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                      ).animate().slideX(begin: -0.1).fadeIn(delay: 200.ms),
-                    ),
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(
+                RoutesHelper.profileScreen,
+                arguments: "688c49c5b93594ab91cb1d1f",
+              ); // Replace with your actual route name and user ID
+            },
+            child: Container(
+              height: effectiveHeaderHeight,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primaryColor,
+                    AppColors.primaryColor.withOpacity(0.9),
                   ],
+                ),
+              ),
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Profile Picture with fallback
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: profileImageUrl != null
+                            ? ClipOval(
+                                child: Image.network(
+                                  profileImageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      _buildProfileFallback(),
+                                ),
+                              )
+                            : _buildProfileFallback(),
+                      ).animate().fadeIn(duration: 300.ms),
+                      const SizedBox(height: 12),
+                      // User Name with overflow protection
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          userName,
+                          style: CustomTypography.nunitoTextTheme.titleLarge
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ).animate().slideX(begin: -0.1).fadeIn(delay: 100.ms),
+                      ),
+                      SizedBox(height: 4),
+                      // User Email with overflow protection
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          userEmail,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 12,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ).animate().slideX(begin: -0.1).fadeIn(delay: 200.ms),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -165,7 +174,10 @@ class CustomDrawer extends StatelessWidget {
                   _buildDrawerItem(
                     icon: Icons.help_outline,
                     title: 'Help & Support',
-                    onTap: () => _navigateAndClose(context, '/help'),
+                    onTap: () => _navigateAndClose(
+                      context,
+                      RoutesHelper.createProfileScreen,
+                    ),
                   ).animate().fadeIn(delay: 650.ms),
 
                   _buildDrawerItem(
