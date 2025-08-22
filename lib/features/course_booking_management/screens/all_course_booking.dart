@@ -2,24 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mrpace/config/routers/router.dart';
 import 'package:mrpace/core/utils/pallete.dart';
-import 'package:mrpace/features/coaching_course_management/controller/coaching_course_controller.dart';
-import 'package:mrpace/features/course_booking_management/screens/course_booking_dialog.dart';
-import 'package:mrpace/widgets/cards/coaching_course_card.dart';
+import 'package:mrpace/features/course_booking_management/controller/course_booking_controller.dart';
+import 'package:mrpace/widgets/cards/course_booking_card.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class AllCoachingCourseScreen extends StatefulWidget {
-  const AllCoachingCourseScreen({Key? key}) : super(key: key);
+class AllCourseBookingsScreen extends StatefulWidget {
+  const AllCourseBookingsScreen({Key? key}) : super(key: key);
 
   @override
-  State<AllCoachingCourseScreen> createState() =>
-      _AllCoachingCourseScreenState();
+  State<AllCourseBookingsScreen> createState() =>
+      _AllCourseBookingsScreenState();
 }
 
-class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
-  final CoachingCourseController controller =
-      Get.find<CoachingCourseController>();
+class _AllCourseBookingsScreenState extends State<AllCourseBookingsScreen> {
+  final CourseBookingController controller =
+      Get.find<CourseBookingController>();
+
+  // You can pass userId as parameter or get from auth controller
+  final String userId =
+      '688c49c5b93594ab91cb1d1f'; // Replace with actual userId
 
   bool _isReversed = false;
 
@@ -45,7 +48,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getAllCoachingCourses();
+      controller.getCourseBookingsByUserId(userId);
     });
   }
 
@@ -58,7 +61,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
         backgroundColor: AppColors.surfaceColor,
         foregroundColor: AppColors.textColor,
         title: Text(
-          'Coaching Courses',
+          'My Course Bookings',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -66,41 +69,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.more_vert,
-              color: AppColors.primaryColor,
-              size: 18,
-            ),
-            onPressed: () {
-              // Show simple dropdown menu
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: const Icon(
-                            Icons.bookmark,
-                            color: AppColors.primaryColor,
-                          ),
-                          title: const Text('My Course Bookings'),
-                          onTap: () {
-                            Get.toNamed(RoutesHelper.allCourseBookingsScreen);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ],
+
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
@@ -130,12 +99,12 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
         }
 
         // Empty State
-        if (controller.coachingCourses.isEmpty) {
+        if (controller.courseBookings.isEmpty) {
           return _buildEmptyState();
         }
 
         // Success State
-        return _buildCoursesList();
+        return _buildBookingsList();
       }),
     );
   }
@@ -147,7 +116,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Header shimmer - Fixed overflow issues
+            // Header shimmer
             Container(
               margin: const EdgeInsets.only(bottom: 20),
               child: Shimmer.fromColors(
@@ -155,7 +124,6 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                 highlightColor: AppColors.primaryColor.withOpacity(0.1),
                 child: Row(
                   children: [
-                    // Use Flexible instead of Expanded to prevent overflow
                     Flexible(
                       flex: 3,
                       child: Container(
@@ -167,7 +135,6 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Fixed width for count text
                     Container(
                       height: 20,
                       width: 80,
@@ -181,11 +148,11 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
               ),
             ),
 
-            // Course cards shimmer - Updated for list layout
+            // Booking cards shimmer
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 8, // Show more items for list view
+              itemCount: 8,
               itemBuilder: (context, index) {
                 return Container(
                       margin: const EdgeInsets.only(bottom: 12.0),
@@ -214,7 +181,9 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
+
                               const SizedBox(width: 12),
+
                               // Course Content Shimmer
                               Expanded(
                                 child: Column(
@@ -272,19 +241,21 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                                         ),
                                       ],
                                     ),
+
                                     const SizedBox(height: 8),
-                                    // Coach Name shimmer
+
+                                    // Payment Status shimmer
                                     Container(
-                                      height: 12,
-                                      width:
-                                          MediaQuery.of(context).size.width *
-                                          0.35,
+                                      height: 18,
+                                      width: 80,
                                       decoration: BoxDecoration(
                                         color: AppColors.cardColor,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                     ),
+
                                     const SizedBox(height: 6),
+
                                     // Date and Duration Row shimmer
                                     Row(
                                       children: [
@@ -337,8 +308,10 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                                         ),
                                       ],
                                     ),
+
                                     const SizedBox(height: 12),
-                                    // Bottom Row: Price and Register Button shimmer
+
+                                    // Bottom Row: Price and Action Button shimmer
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -356,8 +329,10 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                                             ),
                                           ),
                                         ),
+
                                         const SizedBox(width: 12),
-                                        // Register Button shimmer
+
+                                        // Action Button shimmer
                                         Flexible(
                                           flex: 3,
                                           child: Container(
@@ -412,9 +387,11 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                 color: AppColors.errorColor,
               ),
             ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
+
             const SizedBox(height: 24),
+
             Text(
-                  'Unable to Load Courses',
+                  'Unable to Load Bookings',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -425,8 +402,9 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                 .animate()
                 .fadeIn(delay: 200.ms, duration: 600.ms)
                 .slideY(begin: 0.1, end: 0, duration: 600.ms),
+
             const SizedBox(height: 12),
-            // Fixed text overflow with proper constraints
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
@@ -441,8 +419,9 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
             ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
+
             const SizedBox(height: 32),
-            // Fixed button layout to prevent overflow
+
             Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 16,
@@ -451,7 +430,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                     ElevatedButton.icon(
                       onPressed: () {
                         controller.errorMessage.value = '';
-                        controller.getAllCoachingCourses();
+                        controller.getCourseBookingsByUserId(userId);
                       },
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry'),
@@ -508,14 +487,16 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                 borderRadius: BorderRadius.circular(50),
               ),
               child: Icon(
-                Icons.school_outlined,
+                Icons.book_online_outlined,
                 size: 60,
                 color: AppColors.primaryColor,
               ),
             ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
+
             const SizedBox(height: 24),
+
             Text(
-                  'No Courses Available',
+                  'No Bookings Found',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -526,12 +507,13 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                 .animate()
                 .fadeIn(delay: 200.ms, duration: 600.ms)
                 .slideY(begin: 0.1, end: 0, duration: 600.ms),
+
             const SizedBox(height: 12),
-            // Fixed text with proper constraints
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'There are no coaching courses available at the moment. Check back later for new courses!',
+                'You haven\'t booked any courses yet. Browse available courses and book your first session!',
                 style: TextStyle(
                   fontSize: 14,
                   color: AppColors.subtextColor,
@@ -542,9 +524,11 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
             ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
+
             const SizedBox(height: 32),
+
             ElevatedButton.icon(
-                  onPressed: () => controller.getAllCoachingCourses(),
+                  onPressed: () => controller.getCourseBookingsByUserId(userId),
                   icon: const Icon(Icons.refresh),
                   label: const Text('Refresh'),
                   style: ElevatedButton.styleFrom(
@@ -568,11 +552,11 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
     );
   }
 
-  Widget _buildCoursesList() {
+  Widget _buildBookingsList() {
     return RefreshIndicator(
       color: AppColors.primaryColor,
       backgroundColor: AppColors.surfaceColor,
-      onRefresh: controller.refreshCoachingCourses,
+      onRefresh: () => controller.refreshCourseBookings(userId),
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -583,7 +567,6 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Fixed header row to prevent overflow
                   LayoutBuilder(
                     builder: (context, constraints) {
                       return Row(
@@ -594,7 +577,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                      'Available Courses',
+                                      'My Bookings',
                                       style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
@@ -608,10 +591,12 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                                       end: 0,
                                       duration: 600.ms,
                                     ),
+
                                 const SizedBox(height: 4),
+
                                 Obx(
                                   () => Text(
-                                    '${controller.coachingCourses.length} course${controller.coachingCourses.length != 1 ? 's' : ''} available',
+                                    '${controller.courseBookings.length} booking${controller.courseBookings.length != 1 ? 's' : ''} found',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: AppColors.subtextColor,
@@ -624,8 +609,10 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                               ],
                             ),
                           ),
+
                           const SizedBox(width: 16),
-                          // Filter/Sort Button - Updated with toggle functionality
+
+                          // Filter/Sort Button
                           GestureDetector(
                             onTap: _toggleListOrder,
                             child:
@@ -664,8 +651,10 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                       );
                     },
                   ),
+
                   const SizedBox(height: 20),
-                  // Success message display - Fixed overflow
+
+                  // Success message display
                   Obx(() {
                     if (controller.successMessage.value.isNotEmpty) {
                       return Container(
@@ -724,35 +713,30 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
               ),
             ),
           ),
-          // Courses List - Toggle between normal and reversed order
+
+          // Bookings List - Toggle between normal and reversed order
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
-                // Access courses in normal or reversed order based on _isReversed
-                final courseIndex = _isReversed
-                    ? controller.coachingCourses.length - 1 - index
+                // Access bookings in normal or reversed order based on _isReversed
+                final bookingIndex = _isReversed
+                    ? controller.courseBookings.length - 1 - index
                     : index;
 
-                final course = controller.coachingCourses[courseIndex];
-                return CoachingCourseCard(
-                      course: course,
+                final booking = controller.courseBookings[bookingIndex];
+                return CourseBookingCard(
+                      booking: booking,
                       onTap: () {
-                        // Handle course tap - navigate to course details
+                        // Handle booking tap - navigate to booking details
                         Get.toNamed(
-                          RoutesHelper.viewCoachingCourseDetails,
-                          arguments: course,
+                          RoutesHelper.viewCourseBookingDetails,
+                          arguments: booking,
                         );
                       },
                       onRegister: () {
-                        Get.dialog(
-                          CourseBookingDialog(
-                            course: course,
-                            userId: '688c49c5b93594ab91cb1d1f',
-                            price: course.price!,
-                          ),
-                        );
-                        // Handle registration
+                        // Handle action based on payment status
+                        // This will be handled by the card's internal logic
                       },
                     )
                     .animate()
@@ -768,7 +752,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                       duration: 400.ms,
                       curve: Curves.easeOutQuart,
                     );
-              }, childCount: controller.coachingCourses.length),
+              }, childCount: controller.courseBookings.length),
             ),
           ),
           // Bottom padding

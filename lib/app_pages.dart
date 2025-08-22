@@ -11,7 +11,9 @@ import 'package:mrpace/features/cart_management/screen/cart_item_detail.dart';
 import 'package:mrpace/features/cart_management/screen/cart_screen.dart';
 import 'package:mrpace/features/coaching_course_management/screen/all_coaching_courses_screen.dart';
 import 'package:mrpace/features/coaching_course_management/screen/view_coaching_course_screen.dart';
+import 'package:mrpace/features/course_booking_management/screens/all_course_booking.dart';
 import 'package:mrpace/features/course_booking_management/screens/course_booking_success_screen.dart'; // Add this import
+import 'package:mrpace/features/course_booking_management/screens/view_coaching_course_detail_screen.dart';
 import 'package:mrpace/features/home_management/screens/home_screen.dart';
 import 'package:mrpace/features/home_management/screens/main_home_page.dart'
     show MainHomePage;
@@ -30,10 +32,12 @@ import 'package:mrpace/features/registration_management/screens/race_details_reg
 import 'package:mrpace/features/registration_management/screens/success_registraion.dart';
 import 'package:mrpace/features/sports_news/screen/sport_news_details_screen.dart';
 import 'package:mrpace/features/sports_news/screen/sports_news_screen.dart';
+import 'package:mrpace/features/training_package_management/screens/all_training_package_screen.dart';
 import 'package:mrpace/features/welcome_page/splash_screen.dart';
 import 'package:mrpace/models/all_order_model.dart';
 import 'package:mrpace/models/all_races_model.dart';
 import 'package:mrpace/models/coaching_course_model.dart';
+import 'package:mrpace/models/course_booking_model.dart';
 import 'package:mrpace/models/product_model.dart';
 import 'package:mrpace/models/registration_model.dart';
 import 'package:mrpace/models/sports_news_model.dart';
@@ -278,16 +282,26 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),
     ),
+
     GetPage(
-      name: RoutesHelper.coachingCourseBookingSuccess,
+      name: RoutesHelper.viewCourseBookingDetails,
       page: () {
-        final course = Get.arguments as CoachingCourseModel;
-        return ViewCoachingCourseDetailsScreen(course: course);
+        final booking = Get.arguments as CourseBookingModel;
+        return ViewCourseBookingDetailsScreen(booking: booking);
       },
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),
     ),
+
+    GetPage(
+      name: RoutesHelper.allCourseBookingsScreen,
+      page: () => const AllCourseBookingsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+
     // Add the CourseBookingSuccess route
     GetPage(
       name: RoutesHelper.coachingCourseBookingSuccess,
@@ -299,6 +313,13 @@ class AppPages {
           courseBookingId: args['courseBookingId'],
         );
       },
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+    GetPage(
+      name: RoutesHelper.trainingPackagesScreen,
+      page: () => const AllTrainingPackagesScreen(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),

@@ -274,8 +274,8 @@ class _HomePageState extends State<HomePage> {
                     Icons.flag,
                     AppColors.primaryColor,
                     onTap: () {
-                     Get.toNamed(RoutesHelper.all_races_page);
-                    }
+                      Get.toNamed(RoutesHelper.all_races_page);
+                    },
                   ).animate().fadeIn(delay: 650.ms),
                   _buildServiceCard(
                     'Sports Shop',
@@ -294,17 +294,20 @@ class _HomePageState extends State<HomePage> {
                     },
                   ).animate().fadeIn(delay: 750.ms),
                   _buildServiceCard(
-                    'Training Plans',
+                    'Training Programs',
                     Icons.fitness_center,
                     AppColors.primaryColor.withOpacity(0.8),
+                    onTap: () {
+                      Get.toNamed(RoutesHelper.trainingPackagesScreen);
+                    },
                   ).animate().fadeIn(delay: 800.ms),
                   _buildServiceCard(
                     'Coaching Courses',
                     Icons.school,
                     AppColors.secondaryColor.withOpacity(0.8),
-                      onTap: () {
+                    onTap: () {
                       Get.toNamed(RoutesHelper.allCoachingCourseScreen);
-                    }
+                    },
                   ).animate().fadeIn(delay: 850.ms),
                   _buildServiceCard(
                     'My Race Entries',
@@ -312,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                     AppColors.accentColor.withOpacity(0.8),
                     onTap: () {
                       Get.toNamed(RoutesHelper.allRegistrationsPage);
-                    }
+                    },
                   ).animate().fadeIn(delay: 900.ms),
                 ],
               ),
@@ -373,7 +376,6 @@ class _HomePageState extends State<HomePage> {
               ).animate().fadeIn(delay: 1400.ms).slideX(begin: 0.1),
             ),
             const SizedBox(height: 16),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -451,56 +453,53 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-Widget _buildServiceCard(
-  String title,
-  IconData icon,
-  Color color, {
-  VoidCallback? onTap,
-}) {
-  Widget cardContent = Container(
-    decoration: BoxDecoration(
-      color: AppColors.surfaceColor,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: AppColors.borderColor.withOpacity(0.1),
-          blurRadius: 4,
-          offset: const Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: color, size: 24),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: CustomTypography.nunitoTextTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.w500,
-            color: AppColors.textColor,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    ),
-  );
 
-  return onTap != null
-      ? GestureDetector(
-          onTap: onTap,
-          child: cardContent,
-        )
-      : cardContent;
-}
+  Widget _buildServiceCard(
+    String title,
+    IconData icon,
+    Color color, {
+    VoidCallback? onTap,
+  }) {
+    Widget cardContent = Container(
+      decoration: BoxDecoration(
+        color: AppColors.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.borderColor.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: CustomTypography.nunitoTextTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: AppColors.textColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
 
+    return onTap != null
+        ? GestureDetector(onTap: onTap, child: cardContent)
+        : cardContent;
+  }
 
   Widget _buildRaceCard(
     String title,
