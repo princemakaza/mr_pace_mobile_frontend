@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mrpace/core/utils/api_response.dart';
 import 'package:mrpace/features/course_booking_management/services/course_booking_services.dart';
+import 'package:mrpace/models/course_booking_model.dart';
 import '../../../core/utils/logs.dart';
 
 class CourseBookingController extends GetxController {
@@ -42,5 +43,36 @@ class CourseBookingController extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  // Observable list for fetched course bookings
+  var courseBookings = <CourseBookingModel>[].obs;
+  var courseBooking = Rxn<CourseBookingModel>();
+
+  // Method to fetch course bookings by userId
+  Future<void> getCourseBookingsByUserId(String userId) async {
+    try {
+      isLoading(true); // Start loading
+      final response = await CourseBookingService.fetchCourseBookingByUserId(
+        userId,
+      );
+      if (response.success) {
+        courseBookings.value = response.data ?? [];
+        successMessage.value =
+            response.message ?? 'Course bookings loaded successfully';
+      } else {
+        errorMessage.value = response.message!;
+      }
+    } catch (e) {
+      DevLogs.logError('Error fetching course bookings: ${e.toString()}');
+      errorMessage.value =
+          'An error occurred while fetching course bookings: ${e.toString()}';
+    } finally {
+      isLoading(false); // End loading
+    }
+  }
+
+  Future<void> refreshCourseBookings(String userId) async {
+    await getCourseBookingsByUserId(userId);
   }
 }

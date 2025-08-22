@@ -2,54 +2,87 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:get/get.dart';
 import 'package:mrpace/core/utils/pallete.dart';
+import 'package:mrpace/features/payment_management/screens/course_booking_payment_screen.dart';
+import '../../models/course_booking_model.dart';
 
-import '../../models/coaching_course_model.dart';
-
-class CoachingCourseCard extends StatelessWidget {
-  final CoachingCourseModel course;
+class CourseBookingCard extends StatelessWidget {
+  final CourseBookingModel booking;
   final VoidCallback? onTap;
   final VoidCallback? onRegister;
-  final VoidCallback? onShare;
 
-  const CoachingCourseCard({
+  const CourseBookingCard({
     Key? key,
-    required this.course,
+    required this.booking,
     this.onTap,
     this.onRegister,
-    this.onShare,
   }) : super(key: key);
 
-  Future<void> _shareToWhatsApp() async {
-    final message = _buildWhatsAppMessage();
-    final encodedMessage = Uri.encodeComponent(message);
-    final whatsappUrl = 'https://wa.me/?text=$encodedMessage';
+  void _makePayment(BuildContext context) {
+    Get.dialog(
+      CourseBookingPayment(
+        courseBookingPrice: booking.courseId!.price!.toString(),
+        courseBookingId: booking.id!,
+        courseName: booking.courseId!.title!,
+      ),
+    );
+  }
 
-    if (await canLaunch(whatsappUrl)) {
-      await launch(whatsappUrl);
-    } else {
-      throw 'Could not launch WhatsApp';
+  void _trackOrder(BuildContext context) {
+    Get.snackbar(
+      'Track Order',
+      'Opening order tracking...',
+      backgroundColor: AppColors.primaryColor,
+      colorText: AppColors.surfaceColor,
+      snackPosition: SnackPosition.BOTTOM,
+      margin: const EdgeInsets.all(16),
+      borderRadius: 8,
+    );
+  }
+
+  Color _getPaymentStatusColor() {
+    switch (booking.paymentStatus?.toLowerCase()) {
+      case 'completed':
+      case 'paid':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'failed':
+      case 'cancelled':
+        return Colors.red;
+      default:
+        return AppColors.subtextColor;
     }
   }
 
-  String _buildWhatsAppMessage() {
-    return '''
-🏃‍♂️ *${course.title ?? 'Coaching Course'}* 🏃‍♀️
+  String _getActionButtonText() {
+    switch (booking.paymentStatus?.toLowerCase()) {
+      case 'completed':
+      case 'paid':
+        return 'Track Order';
+      case 'pending':
+        return 'Make Payment';
+      case 'failed':
+        return 'Retry Payment';
+      default:
+        return 'View Details';
+    }
+  }
 
-${course.description != null && course.description!.isNotEmpty ? '📝 ${course.description}\n' : ''}
-👨‍🏫 *Coach:* ${course.coach?.userName ?? 'Expert Coach'}
-📅 *Date:* ${course.date != null ? DateFormat('MMM dd, yyyy').format(course.date!) : 'To be announced'}
-⏰ *Duration:* ${course.durationInHours ?? 'N/A'} hours
-📍 *Location:* ${course.location ?? 'Online'}
-💰 *Price:* \$${course.price?.toStringAsFixed(0) ?? 'Free'}
-🎯 *Level:* ${course.difficultyLevel ?? 'All levels'}
-
-📲 *Download the MrPace app to register!*
-👉 Play Store: https://play.google.com/store/apps/details?id=com.mrpace.app
-
-${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
-''';
+  void _handleActionButton(BuildContext context) {
+    switch (booking.paymentStatus?.toLowerCase()) {
+      case 'completed':
+      case 'paid':
+        _trackOrder(context);
+        break;
+      case 'pending':
+      case 'failed':
+        _makePayment(context);
+        break;
+      default:
+        if (onRegister != null) onRegister!();
+    }
   }
 
   @override
@@ -78,7 +111,6 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
                   // Course Image
                   _buildCourseImage(),
                   const SizedBox(width: 12),
-
                   // Course Content
                   Expanded(
                     child: Column(
@@ -91,7 +123,7 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
                           children: [
                             Expanded(
                               child: Text(
-                                course.title ?? 'Untitled Course',
+                                booking.courseId?.title ?? 'Untitled Course',
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -103,24 +135,34 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
                               ),
                             ),
                             const SizedBox(width: 8),
-                            _buildShareButton(),
                           ],
                         ),
                         const SizedBox(height: 6),
-                        // Coach Name
-                        if (course.coach?.userName != null) ...[
-                          Text(
-                            'Coach: ${course.coach!.userName!}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: AppColors.subtextColor,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                        // Payment Status
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
                           ),
-                          const SizedBox(height: 4),
-                        ],
+                          decoration: BoxDecoration(
+                            color: _getPaymentStatusColor().withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: _getPaymentStatusColor().withOpacity(0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            booking.paymentStatus ?? 'Unknown',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: _getPaymentStatusColor(),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 6),
 
                         // Date and Duration Row
                         Row(
@@ -133,10 +175,10 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                course.date != null
+                                booking.courseId?.date != null
                                     ? DateFormat(
                                         'MMM dd, yyyy',
-                                      ).format(course.date!)
+                                      ).format(booking.courseId!.date!)
                                     : 'Date TBA',
                                 style: TextStyle(
                                   fontSize: 10,
@@ -147,7 +189,7 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            if (course.durationInHours != null) ...[
+                            if (booking.courseId?.durationInHours != null) ...[
                               const SizedBox(width: 8),
                               Icon(
                                 Icons.access_time,
@@ -156,7 +198,7 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
                               ),
                               const SizedBox(width: 2),
                               Text(
-                                '${course.durationInHours}h',
+                                '${booking.courseId!.durationInHours}h',
                                 style: TextStyle(
                                   fontSize: 10,
                                   color: AppColors.subtextColor,
@@ -169,7 +211,7 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
 
                         const SizedBox(height: 8),
 
-                        // Bottom Row: Price and Register Button
+                        // Bottom Row: Price and Action Button
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -186,8 +228,8 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
-                                  course.price != null
-                                      ? '\$${course.price!.toStringAsFixed(0)}'
+                                  booking.pricePaid != null
+                                      ? '\$${booking.pricePaid!.toStringAsFixed(0)}'
                                       : 'Free',
                                   style: const TextStyle(
                                     fontSize: 12,
@@ -202,15 +244,15 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
 
                             const SizedBox(width: 12),
 
-                            // Register Button
+                            // Action Button
                             Flexible(
                               flex: 3,
                               child: SizedBox(
                                 height: 32,
                                 child: ElevatedButton(
-                                  onPressed: onRegister,
+                                  onPressed: () => _handleActionButton(context),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primaryColor,
+                                    backgroundColor: _getActionButtonColor(),
                                     foregroundColor: Colors.white,
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 12,
@@ -220,9 +262,9 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
                                     ),
                                     elevation: 1,
                                   ),
-                                  child: const Text(
-                                    'Register',
-                                    style: TextStyle(
+                                  child: Text(
+                                    _getActionButtonText(),
+                                    style: const TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -252,9 +294,25 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
         );
   }
 
+  Color _getActionButtonColor() {
+    switch (booking.paymentStatus?.toLowerCase()) {
+      case 'completed':
+      case 'paid':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'failed':
+        return Colors.red;
+      default:
+        return AppColors.primaryColor;
+    }
+  }
+
   Widget _buildCourseImage() {
-    final imageUrl = course.coverImage != null && course.coverImage!.isNotEmpty
-        ? course.coverImage
+    final imageUrl =
+        booking.courseId?.coverImage != null &&
+            booking.courseId!.coverImage!.isNotEmpty
+        ? booking.courseId!.coverImage
         : null;
 
     return ClipRRect(
@@ -313,10 +371,10 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.school, color: AppColors.primaryColor, size: 24),
+          Icon(Icons.book_online, color: AppColors.primaryColor, size: 24),
           const SizedBox(height: 2),
           Text(
-            'Course',
+            'Booking',
             style: TextStyle(
               color: AppColors.primaryColor,
               fontSize: 8,
@@ -324,20 +382,6 @@ ${course.platformLink != null ? '🔗 Join here: ${course.platformLink}' : ''}
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildShareButton() {
-    return GestureDetector(
-      onTap: onShare ?? _shareToWhatsApp,
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: AppColors.primaryColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Icon(Icons.share, color: AppColors.primaryColor, size: 14),
       ),
     );
   }

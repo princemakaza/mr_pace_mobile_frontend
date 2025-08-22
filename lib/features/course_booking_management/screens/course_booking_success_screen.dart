@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrpace/core/utils/pallete.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mrpace/features/payment_management/screens/course_booking_payment_screen.dart';
 import 'package:mrpace/features/payment_management/screens/payment_registration.dart';
 
 import '../../../widgets/custom_animations/fade_in_animation.dart';
@@ -202,11 +203,12 @@ class _CourseBookingSuccessState extends State<CourseBookingSuccess> {
                     child: GestureDetector(
                       onTap: () {
                         // Add payment processing logic here
+
                         Get.dialog(
-                          PayRegistration(
-                            registrationPrice: widget.bookingPrice,
-                            registration_number: widget.courseBookingId,
-                            raceName: widget.courseName,
+                          CourseBookingPayment(
+                            courseBookingPrice: widget.bookingPrice,
+                            courseBookingId: widget.courseBookingId,
+                            courseName: widget.courseName,
                           ),
                         );
 

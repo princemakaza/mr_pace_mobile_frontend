@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mrpace/config/routers/router.dart';
 import 'package:mrpace/core/utils/pallete.dart';
-import 'package:mrpace/features/coaching_course_management/controller/coaching_course_controller.dart';
-import 'package:mrpace/features/course_booking_management/screens/course_booking_dialog.dart';
-import 'package:mrpace/widgets/cards/coaching_course_card.dart';
+import 'package:mrpace/features/training_package_management/controller/training_package_controller.dart';
+import 'package:mrpace/widgets/cards/training_package_card.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class AllCoachingCourseScreen extends StatefulWidget {
-  const AllCoachingCourseScreen({Key? key}) : super(key: key);
+class AllTrainingPackagesScreen extends StatefulWidget {
+  const AllTrainingPackagesScreen({Key? key}) : super(key: key);
 
   @override
-  State<AllCoachingCourseScreen> createState() =>
-      _AllCoachingCourseScreenState();
+  State<AllTrainingPackagesScreen> createState() =>
+      _AllTrainingPackagesScreenState();
 }
 
-class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
-  final CoachingCourseController controller =
-      Get.find<CoachingCourseController>();
+class _AllTrainingPackagesScreenState extends State<AllTrainingPackagesScreen> {
+  final TrainingPackageController controller =
+      Get.find<TrainingPackageController>();
 
   bool _isReversed = false;
 
@@ -45,7 +44,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getAllCoachingCourses();
+      controller.getAllTrainingPackages();
     });
   }
 
@@ -58,7 +57,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
         backgroundColor: AppColors.surfaceColor,
         foregroundColor: AppColors.textColor,
         title: Text(
-          'Coaching Courses',
+          'Training Packages',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -88,7 +87,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                             Icons.bookmark,
                             color: AppColors.primaryColor,
                           ),
-                          title: const Text('My Course Bookings'),
+                          title: const Text('My Package Bookings'),
                           onTap: () {
                             Get.toNamed(RoutesHelper.allCourseBookingsScreen);
                           },
@@ -130,12 +129,12 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
         }
 
         // Empty State
-        if (controller.coachingCourses.isEmpty) {
+        if (controller.packages.isEmpty) {
           return _buildEmptyState();
         }
 
         // Success State
-        return _buildCoursesList();
+        return _buildPackagesList();
       }),
     );
   }
@@ -181,7 +180,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
               ),
             ),
 
-            // Course cards shimmer - Updated for list layout
+            // Package cards shimmer - Updated for list layout
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -205,7 +204,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Course Image Shimmer
+                              // Package Image Shimmer
                               Container(
                                 width: 80,
                                 height: 80,
@@ -215,7 +214,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              // Course Content Shimmer
+                              // Package Content Shimmer
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,7 +413,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
             ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
             const SizedBox(height: 24),
             Text(
-                  'Unable to Load Courses',
+                  'Unable to Load Packages',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -451,7 +450,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                     ElevatedButton.icon(
                       onPressed: () {
                         controller.errorMessage.value = '';
-                        controller.getAllCoachingCourses();
+                        controller.getAllTrainingPackages();
                       },
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry'),
@@ -508,14 +507,14 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                 borderRadius: BorderRadius.circular(50),
               ),
               child: Icon(
-                Icons.school_outlined,
+                Icons.fitness_center_outlined,
                 size: 60,
                 color: AppColors.primaryColor,
               ),
             ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
             const SizedBox(height: 24),
             Text(
-                  'No Courses Available',
+                  'No Packages Available',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -531,7 +530,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'There are no coaching courses available at the moment. Check back later for new courses!',
+                'There are no training packages available at the moment. Check back later for new packages!',
                 style: TextStyle(
                   fontSize: 14,
                   color: AppColors.subtextColor,
@@ -544,7 +543,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
             ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
             const SizedBox(height: 32),
             ElevatedButton.icon(
-                  onPressed: () => controller.getAllCoachingCourses(),
+                  onPressed: () => controller.getAllTrainingPackages(),
                   icon: const Icon(Icons.refresh),
                   label: const Text('Refresh'),
                   style: ElevatedButton.styleFrom(
@@ -568,11 +567,11 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
     );
   }
 
-  Widget _buildCoursesList() {
+  Widget _buildPackagesList() {
     return RefreshIndicator(
       color: AppColors.primaryColor,
       backgroundColor: AppColors.surfaceColor,
-      onRefresh: controller.refreshCoachingCourses,
+      onRefresh: controller.refreshTrainingPackages,
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -594,7 +593,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                      'Available Courses',
+                                      'Available Packages',
                                       style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
@@ -611,7 +610,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                                 const SizedBox(height: 4),
                                 Obx(
                                   () => Text(
-                                    '${controller.coachingCourses.length} course${controller.coachingCourses.length != 1 ? 's' : ''} available',
+                                    '${controller.packages.length} package${controller.packages.length != 1 ? 's' : ''} available',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: AppColors.subtextColor,
@@ -724,36 +723,28 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
               ),
             ),
           ),
-          // Courses List - Toggle between normal and reversed order
+          // Packages List - Toggle between normal and reversed order
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
-                // Access courses in normal or reversed order based on _isReversed
-                final courseIndex = _isReversed
-                    ? controller.coachingCourses.length - 1 - index
+                // Access packages in normal or reversed order based on _isReversed
+                final packageIndex = _isReversed
+                    ? controller.packages.length - 1 - index
                     : index;
 
-                final course = controller.coachingCourses[courseIndex];
-                return CoachingCourseCard(
-                      course: course,
+                final package = controller.packages[packageIndex];
+                return TrainingPackageCard(
+                      package: package,
                       onTap: () {
-                        // Handle course tap - navigate to course details
-                        Get.toNamed(
-                          RoutesHelper.viewCoachingCourseDetails,
-                          arguments: course,
-                        );
+                        // Handle package tap - navigate to package details
+                        // Get.toNamed(
+                        //   RoutesHelper.viewTrainingPackageDetails,
+                        //   arguments: package,
+                        // );
                       },
-                      onRegister: () {
-                        Get.dialog(
-                          CourseBookingDialog(
-                            course: course,
-                            userId: '688c49c5b93594ab91cb1d1f',
-                            price: course.price!,
-                          ),
-                        );
-                        // Handle registration
-                      },
+       
+           
                     )
                     .animate()
                     .fadeIn(
@@ -768,7 +759,7 @@ class _AllCoachingCourseScreenState extends State<AllCoachingCourseScreen> {
                       duration: 400.ms,
                       curve: Curves.easeOutQuart,
                     );
-              }, childCount: controller.coachingCourses.length),
+              }, childCount: controller.packages.length),
             ),
           ),
           // Bottom padding

@@ -14,6 +14,7 @@ import 'package:mrpace/features/profile_management/controller/profile_controller
 import 'package:mrpace/features/race_management/controller/race_controller.dart';
 import 'package:mrpace/features/registration_management/controller/registration_controller.dart';
 import 'package:mrpace/features/sports_news/controllers/sports_news_controller.dart';
+import 'package:mrpace/features/training_package_management/controller/training_package_controller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -35,6 +36,7 @@ void main() async {
   Get.put(ProfileController());
   Get.put(CoachingCourseController());
   Get.put(CourseBookingController());
+  Get.put(TrainingPackageController());
   runApp(MyApp());
 }
 

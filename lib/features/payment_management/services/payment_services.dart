@@ -233,6 +233,61 @@ class PaymentService {
     }
   }
 
+
+static Future<String> checkCoursePaymentStatus({
+    required String pollUrl,
+    required String courseBookingId,
+  }) async {
+    // Get the user token
+    final token = await CacheUtils.checkToken();
+
+    // Define the URL to check payment order status
+    const String url = '${ApiKeys.baseUrl}/course_bookings/payment/status';
+    var client = http.Client();
+
+    // Construct the request body
+    final body = json.encode({"pollUrl": pollUrl, "bookingId": courseBookingId});
+
+    // Define the request headers
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    try {
+      // Send the request and get the response
+      final response = await client.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+
+      // Log the response body
+      DevLogs.logInfo('Payment response: ${response.body}');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final responseData = json.decode(response.body);
+
+        // Return the payment order status and registration number
+        return 'Payment submitted successfully';
+      } else {
+        // Return an error message if the payment failed
+        DevLogs.logError(
+          'Payment failed. HTTP Status: ${response.statusCode} - ${response.reasonPhrase}',
+        );
+        return 'Payment failed. HTTP Status: ${response.statusCode} - ${response.reasonPhrase}';
+      }
+    } catch (e) {
+      // Return an error message if there was an error during the payment submission
+      DevLogs.logError('Payment submission error: $e');
+      return 'Error during payment submission: $e';
+    } finally {
+      // Close the HTTP client
+      client.close();
+    }
+  }
+
+
   static Future<APIResponse<String>> submitCoursebookingPayment({
     required String courseBookingId,
     required String phoneNumber,
