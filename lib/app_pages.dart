@@ -41,6 +41,9 @@ import 'package:mrpace/models/course_booking_model.dart';
 import 'package:mrpace/models/product_model.dart';
 import 'package:mrpace/models/registration_model.dart';
 import 'package:mrpace/models/sports_news_model.dart';
+import 'package:mrpace/models/training_bought_package_model.dart';
+
+import 'features/training_package_management/screens/training_program_detail_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -320,6 +323,20 @@ class AppPages {
     GetPage(
       name: RoutesHelper.trainingPackagesScreen,
       page: () => const AllTrainingPackagesScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      customTransition: CustomPageTransition(),
+    ),
+
+    GetPage(
+      name: RoutesHelper.trainingProgramDetailScreen,
+      page: () {
+        final trainingpackageBoughtModel =
+            Get.arguments as TrainingPackageBoughtModel;
+        return TrainingProgramDetailScreen(
+          trainingPackage: trainingpackageBoughtModel,
+        );
+      },
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
       customTransition: CustomPageTransition(),

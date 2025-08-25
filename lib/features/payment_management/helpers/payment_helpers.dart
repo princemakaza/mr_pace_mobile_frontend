@@ -47,6 +47,51 @@ class PaymentHelper {
     }
   }
 
+
+
+  Future<bool> submitTrainingPackageBuyCoffee({
+    required String training_package_bought_id,
+    required String phoneNumber,
+  }) async {
+    if (training_package_bought_id.isEmpty) {
+      return _showError('Course booking ID is required');
+    }
+    if (phoneNumber.isEmpty) {
+      return _showError('Phone number is required');
+    }
+
+    Get.dialog(
+      const CustomLoader(message: 'Submitting course booking payment...'),
+      barrierDismissible: false,
+    );
+
+    try {
+      final response = await _paymentController.submitTrainingPackageBuyCoffee(
+        training_package_bought_id,
+        phoneNumber,
+      );
+      Get.back(); // Close loader
+
+      if (response.success) {
+        DevLogs.logInfo("Course booking payment: ${response.data}");
+        Get.offNamed(
+          RoutesHelper.paymentPage,
+          arguments: {'phoneNumber': phoneNumber},
+        );
+        return true;
+      }
+      return _showError(response.message ?? 'Course booking payment failed');
+    } catch (e) {
+      Get.back();
+      return _showError(
+        'Failed to submit course booking payment: ${e.toString()}',
+      );
+    }
+  }
+
+
+
+
   // 🚀 New helper function for course booking payment
   Future<bool> submitCoursebookingPayment({
     required String courseBookingId,
