@@ -1,0 +1,228 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mrpace/core/utils/pallete.dart';
+import 'package:mrpace/features/payment_management/helpers/payment_helpers.dart';
+import 'package:mrpace/widgets/text_fields/custom_text_field.dart';
+
+class TrainingPackageBuyCoachCoffeeDialog extends StatefulWidget {
+  final String userId;
+  final String trainingProgramPackageId;
+  final String pricePaid;
+
+  const TrainingPackageBuyCoachCoffeeDialog({
+    super.key,
+    required this.userId,
+    required this.trainingProgramPackageId,
+    required this.pricePaid,
+  });
+
+  @override
+  State<TrainingPackageBuyCoachCoffeeDialog> createState() =>
+      _TrainingPackageBuyCoachCoffeeDialogState();
+}
+
+class _TrainingPackageBuyCoachCoffeeDialogState
+    extends State<TrainingPackageBuyCoachCoffeeDialog> {
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final PaymentHelper _paymentHelper = PaymentHelper(); // Initialize helper
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      alignment: Alignment.bottomCenter,
+      insetPadding: EdgeInsets.zero,
+      shadowColor: Colors.grey.withOpacity(0.2),
+      child: Container(
+        width: double.maxFinite,
+        height: MediaQuery.of(context).size.height * 0.6,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.backgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Buy Coffee for Coach',
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryColor,
+                            ),
+                      ).animate().fadeIn(duration: 300.ms),
+                    ),
+                    IconButton(
+                      onPressed: () => Get.back(),
+                      icon: Icon(Icons.close, color: AppColors.textColor),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Coffee Support Info Card
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardColor,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.borderColor),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.coffee,
+                            color: AppColors.primaryColor,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Support Your Coach',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryColor,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Finish buying coffee for the coach. This will help our coaches!',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Coffee Amount: \$${widget.pricePaid}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.successColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ).animate().slideY(begin: -0.1, duration: 400.ms),
+
+                const SizedBox(height: 24),
+
+                // Payment Method Section
+                Text(
+                  'Payment Method',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textColor,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // EcoCash Logo
+                Center(
+                  child: Image.asset(
+                    'assets/icons/ecocash.png',
+                    height: 60,
+                    width: 120,
+                    fit: BoxFit.contain,
+                  ),
+                ).animate().fadeIn(duration: 500.ms),
+
+                const SizedBox(height: 24),
+
+                // Phone Number Input
+                CustomTextField(
+                  prefixIcon: Icon(Icons.phone, color: AppColors.primaryColor),
+                  controller: _phoneNumberController,
+                  labelText: 'EcoCash Phone Number',
+                  keyboardType: TextInputType.phone,
+                ).animate().slideX(begin: 0.1, duration: 600.ms),
+
+                const SizedBox(height: 32),
+
+                // Buy Coffee Button
+                GestureDetector(
+                  onTap: () async {
+                    await _paymentHelper.submitTrainingPackageBuyCoffee(
+                      training_package_bought_id:
+                          widget.trainingProgramPackageId,
+                      phoneNumber: _phoneNumberController.text,
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryColor.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.coffee,
+                            color: AppColors.backgroundColor,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Buy Coffee for Coach",
+                            style: GoogleFonts.poppins(
+                              color: AppColors.backgroundColor,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ).animate().scale(duration: 300.ms, delay: 850.ms),
+
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _phoneNumberController.dispose();
+    super.dispose();
+  }
+}

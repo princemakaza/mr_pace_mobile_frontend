@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:mrpace/core/utils/pallete.dart';
+import 'package:mrpace/features/payment_management/helpers/payment_helpers.dart';
+import 'package:mrpace/features/payment_management/screens/training_package_buy_coffee.dart';
+import 'package:mrpace/features/training_package_management/helpers/training_package_helper.dart';
 import 'package:mrpace/models/training_package_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class TrainingPackageCard extends StatelessWidget {
+class TrainingPackageCard extends StatefulWidget {
   final TrainingProgramPackage package;
+  final String userId;
   final VoidCallback? onTap;
   final VoidCallback? onProceedToPayment;
   final VoidCallback? onShare;
@@ -17,8 +22,16 @@ class TrainingPackageCard extends StatelessWidget {
     this.onTap,
     this.onProceedToPayment,
     this.onShare,
+    required this.userId,
   }) : super(key: key);
 
+  @override
+  State<TrainingPackageCard> createState() => _TrainingPackageCardState();
+}
+
+class _TrainingPackageCardState extends State<TrainingPackageCard> {
+  final TrainingPackageHelper _trainingPackageHelper = TrainingPackageHelper();
+  // Initialize helper
   Future<void> _shareToWhatsApp() async {
     final message = _buildWhatsAppMessage();
     final encodedMessage = Uri.encodeComponent(message);
@@ -33,13 +46,13 @@ class TrainingPackageCard extends StatelessWidget {
 
   String _buildWhatsAppMessage() {
     return '''
-🏋️‍♂️ *${package.title ?? 'Premium Training Program'}* 💪
+🏋️‍♂️ *${widget.package.title ?? 'Premium Training Program'}* 💪
 
-${package.description != null && package.description!.isNotEmpty ? '📝 ${package.description}\n' : ''}
-👨‍🏫 *Coach:* ${package.coach?.userName ?? 'Expert Coach'}
-📅 *Duration:* ${package.durationInWeeks ?? 'N/A'} weeks
-🎯 *Level:* ${package.difficultyLevel ?? 'All levels'}
-🏃‍♀️ *Target Race:* ${package.targetRaceType ?? 'General Fitness'}
+${widget.package.description != null && widget.package.description!.isNotEmpty ? '📝 ${widget.package.description}\n' : ''}
+👨‍🏫 *Coach:* ${widget.package.coach?.userName ?? 'Expert Coach'}
+📅 *Duration:* ${widget.package.durationInWeeks ?? 'N/A'} weeks
+🎯 *Level:* ${widget.package.difficultyLevel ?? 'All levels'}
+🏃‍♀️ *Target Race:* ${widget.package.targetRaceType ?? 'General Fitness'}
 
 📲 *To view more details and unlock this premium training program, download the MrPace app!*
 👉 Play Store: https://play.google.com/store/apps/details?id=com.mrpace.app
@@ -80,7 +93,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        package.title ?? 'Premium Training Program',
+                        widget.package.title ?? 'Premium Training Program',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -88,7 +101,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                         ),
                       ),
                       const SizedBox(height: 8),
-                      if (package.coach?.userName != null) ...[
+                      if (widget.package.coach?.userName != null) ...[
                         Row(
                           children: [
                             Icon(
@@ -98,7 +111,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              'Coach: ${package.coach!.userName!}',
+                              'Coach: ${widget.package.coach!.userName!}',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: AppColors.subtextColor,
@@ -109,7 +122,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                         ),
                         const SizedBox(height: 8),
                       ],
-                      if (package.durationInWeeks != null) ...[
+                      if (widget.package.durationInWeeks != null) ...[
                         Row(
                           children: [
                             Icon(
@@ -119,7 +132,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              'Duration: ${package.durationInWeeks} weeks',
+                              'Duration: ${widget.package.durationInWeeks} weeks',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: AppColors.subtextColor,
@@ -200,9 +213,12 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                     Expanded(
                       flex: 2,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          onProceedToPayment?.call();
+                        onPressed: () async {
+                          await _trainingPackageHelper.submitTrainingPackage(
+                            userId: widget.userId,
+                            pricePaid: widget.package.price!,
+                            trainingPackageId: widget.package.id!,
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
@@ -233,7 +249,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-          onTap: onTap,
+          onTap: widget.onTap,
           child: Container(
             margin: const EdgeInsets.only(bottom: 12.0),
             padding: const EdgeInsets.all(12.0),
@@ -269,7 +285,8 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                           children: [
                             Expanded(
                               child: Text(
-                                package.title ?? 'Untitled Training Program',
+                                widget.package.title ??
+                                    'Untitled Training Program',
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -287,10 +304,10 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                         const SizedBox(height: 6),
 
                         // Description
-                        if (package.description != null &&
-                            package.description!.isNotEmpty) ...[
+                        if (widget.package.description != null &&
+                            widget.package.description!.isNotEmpty) ...[
                           Text(
-                            package.description!,
+                            widget.package.description!,
                             style: TextStyle(
                               fontSize: 11,
                               color: AppColors.subtextColor,
@@ -303,9 +320,9 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                         ],
 
                         // Coach Name
-                        if (package.coach?.userName != null) ...[
+                        if (widget.package.coach?.userName != null) ...[
                           Text(
-                            'Coach: ${package.coach!.userName!}',
+                            'Coach: ${widget.package.coach!.userName!}',
                             style: TextStyle(
                               fontSize: 11,
                               color: AppColors.subtextColor,
@@ -320,7 +337,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                         // Duration and Difficulty Row
                         Row(
                           children: [
-                            if (package.durationInWeeks != null) ...[
+                            if (widget.package.durationInWeeks != null) ...[
                               Icon(
                                 Icons.schedule,
                                 color: AppColors.primaryColor,
@@ -328,7 +345,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                '${package.durationInWeeks}w',
+                                '${widget.package.durationInWeeks}w',
                                 style: TextStyle(
                                   fontSize: 10,
                                   color: AppColors.textColor,
@@ -336,11 +353,11 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                                 ),
                               ),
                             ],
-                            if (package.durationInWeeks != null &&
-                                package.difficultyLevel != null) ...[
+                            if (widget.package.durationInWeeks != null &&
+                                widget.package.difficultyLevel != null) ...[
                               const SizedBox(width: 12),
                             ],
-                            if (package.difficultyLevel != null) ...[
+                            if (widget.package.difficultyLevel != null) ...[
                               Icon(
                                 Icons.fitness_center,
                                 color: AppColors.subtextColor,
@@ -349,7 +366,7 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
                               const SizedBox(width: 2),
                               Expanded(
                                 child: Text(
-                                  package.difficultyLevel!,
+                                  widget.package.difficultyLevel!,
                                   style: TextStyle(
                                     fontSize: 10,
                                     color: AppColors.subtextColor,
@@ -424,8 +441,9 @@ ${package.description != null && package.description!.isNotEmpty ? '📝 ${packa
 
   Widget _buildPackageImage() {
     final imageUrl =
-        package.coverImage != null && package.coverImage!.isNotEmpty
-        ? package.coverImage
+        widget.package.coverImage != null &&
+            widget.package.coverImage!.isNotEmpty
+        ? widget.package.coverImage
         : null;
 
     return ClipRRect(

@@ -32,5 +32,6 @@ class RoutesHelper {
   static String viewCourseBookingDetails = "/view_course_booking_details";
   static String allCourseBookingsScreen = "/all_course_bookings_screen";
   static String trainingPackagesScreen = "/training_packages_screen";
+  static String trainingProgramDetailScreen = "/training_program_detail_screen";
   // static String paymentSuccessScreen = "/payment_success_screen";
 }
